@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${GeistMono.className}`}>
+      <body className={`${GeistMono.className} dark`}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
