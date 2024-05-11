@@ -1,5 +1,4 @@
 import CreateForm from "@/components/CreateForm";
-import CreateProject from "@/components/CreateProject";
 import { Icons } from "@/components/Icons";
 import { getServerAuthSession } from "@/server/auth";
 import Link from "next/link";
@@ -26,7 +25,6 @@ const CreatePage = async () => {
             Create New Project
           </p>
         </div>
-        <CreateProject/>
       </div>
       <CreateForm user={session.user} />
     </div>

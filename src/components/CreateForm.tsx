@@ -9,20 +9,22 @@ import { type User } from "next-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { type TCreateFormSchema, createFormSchema } from "@/lib/utils";
-import { createFormStore } from "@/lib/zustand";
+import { type TCreateFormSchema } from "@/lib/utils";
+import { toast } from "./ui/use-toast";
+import { api } from "@/trpc/react";
 
 interface ICreateForm {
   user: User;
 }
 
 const CreateForm: FC<ICreateForm> = ({ user }) => {
-  const { data: storeData, setData: setStoreData } = createFormStore();
-  const { register, control, handleSubmit } = useForm<
-    Omit<TCreateFormSchema, "owner">
-  >({
-    resolver: zodResolver(createFormSchema),
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Omit<TCreateFormSchema, "owner">>({
+    // resolver: zodResolver(createFormSchema),
     defaultValues: {
       projectName: "",
       columns: [
@@ -37,14 +39,27 @@ const CreateForm: FC<ICreateForm> = ({ user }) => {
     control,
     name: "columns",
   });
+  const { mutate } = api.project.create.useMutation();
 
   const onSubmit = (data: Omit<TCreateFormSchema, "owner">) => {
-    console.log(data);
+    const dataWithOwner = {
+      ...data,
+      owner: user.id,
+    };
+
+    mutate(dataWithOwner);
   };
 
+  if (errors.projectName) {
+    toast({
+      variant: "destructive",
+      title: "Project name cannot be empty!",
+    });
+  }
+
   return (
-    <div className="bg-red-20 w-full p-12">
-      <form className="flex w-full" onSubmit={handleSubmit(onSubmit)}>
+    <div className="bg-red-20 flex w-full grow flex-col justify-between">
+      <form className="flex w-full p-12">
         <div className="w-1/2 space-y-8">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
@@ -75,10 +90,15 @@ const CreateForm: FC<ICreateForm> = ({ user }) => {
             <div className="space-y-2" id="columns">
               {fields.map((field, idx) => {
                 return (
-                  <div key={field.id} className="flex items-center gap-2">
+                  <section
+                    key={field.id}
+                    className="section flex items-center gap-2"
+                  >
                     <Input
-                      key={field.id}
-                      {...register(`columns.${idx}.name` as const)}
+                      placeholder="Column name"
+                      {...register(`columns.${idx}.name`, {
+                        required: true,
+                      })}
                       className="w-[400px]"
                     />
                     <Button
@@ -90,7 +110,7 @@ const CreateForm: FC<ICreateForm> = ({ user }) => {
                     >
                       <Icons.cross />
                     </Button>
-                  </div>
+                  </section>
                 );
               })}
             </div>
@@ -115,8 +135,11 @@ const CreateForm: FC<ICreateForm> = ({ user }) => {
           </div>
           TODO: SO EMPTY ONLY YOU
         </div>
-        <input type="submit" />
       </form>
+
+      <footer className="sticky bottom-0 flex h-[80px] w-full items-center justify-end bg-violet-900 p-4 shadow-md">
+        <Button onClick={handleSubmit(onSubmit)}>Create Project!</Button>
+      </footer>
     </div>
   );
 };

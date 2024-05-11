@@ -29,8 +29,44 @@ export const projects = createTable("project", {
     .references(() => users.id),
 });
 
-export const projectsRelations = relations(projects, ({ one }) => ({
+export const projectsRelations = relations(projects, ({ one, many }) => ({
   user: one(users, { fields: [projects.owner], references: [users.id] }),
+  columns: many(columns),
+}));
+
+export const columns = createTable("column", {
+  id: varchar("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid(10)),
+  name: varchar("name").notNull(),
+  projectId: varchar("projectId", { length: 255 })
+    .notNull()
+    .references(() => projects.id),
+});
+
+export const columnsRelations = relations(columns, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [columns.projectId],
+    references: [projects.id],
+  }),
+  items: many(items),
+}));
+
+export const items = createTable("item", {
+  id: varchar("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid(10)),
+  name: varchar("name").notNull(),
+  columnId: varchar("columnId", { length: 255 })
+    .notNull()
+    .references(() => columns.id),
+});
+
+export const itemsRelations = relations(items, ({ one }) => ({
+  column: one(columns, {
+    fields: [items.columnId],
+    references: [columns.id],
+  }),
 }));
 
 export const users = createTable("user", {
