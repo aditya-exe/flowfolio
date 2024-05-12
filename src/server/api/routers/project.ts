@@ -1,8 +1,9 @@
 // import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { createFormSchema } from "@/lib/utils";
-import { columns, projects } from "@/server/db/schema";
+import { columns, projects, users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 
 export const projectRouter = createTRPCRouter({
   create: protectedProcedure
@@ -40,4 +41,17 @@ export const projectRouter = createTRPCRouter({
         message: "OK: project created",
       };
     }),
+  getAllByUserId: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const dbProjects = (
+      await ctx.db
+        .select()
+        .from(projects)
+        .where(eq(projects.owner, userId))
+        .innerJoin(users, eq(users.id, projects.owner))
+    ).map(({ project, user }) => ({ ...project, owner: user }));
+
+    return dbProjects;
+  }),
 });
