@@ -54,6 +54,8 @@ export const columnsRelations = relations(columns, ({ one, many }) => ({
   items: many(items),
 }));
 
+export type Column = typeof columns.$inferSelect;
+
 export const items = createTable("item", {
   id: varchar("id")
     .primaryKey()

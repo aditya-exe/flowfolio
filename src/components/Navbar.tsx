@@ -6,9 +6,11 @@ import Link from "next/link";
 import UserAvatar from "./UserAvatar";
 import ProjectsDropdown from "./ProjectsDropdown";
 import YourWorkDropdown from "./YourWorkDropdown";
+import { Button } from "./ui/button";
+import { signIn } from "next-auth/react";
 
 interface INavbar {
-  user: User;
+  user: User | undefined;
 }
 
 const Navbar: FC<INavbar> = ({ user }) => {
@@ -22,9 +24,13 @@ const Navbar: FC<INavbar> = ({ user }) => {
           Flowfolio
         </Link>
         <ProjectsDropdown />
-        <YourWorkDropdown/>
+        <YourWorkDropdown />
       </div>
-      <UserAvatar userName={user.name ?? ""} userImage={user.image ?? ""} />
+      {user ? (
+        <UserAvatar userName={user.name ?? ""} userImage={user.image ?? ""} />
+      ) : (
+        <Button onClick={() => signIn("discord")}>Sign In</Button>
+      )}
     </div>
   );
 };
