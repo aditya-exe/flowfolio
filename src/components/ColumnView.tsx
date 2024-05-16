@@ -7,6 +7,7 @@ import { Icons } from "./Icons";
 import { api } from "@/trpc/react";
 import { toast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
+import SingleColumn from "./SingleColumn";
 
 interface IColumnView {
   columns: Column[];
@@ -42,40 +43,36 @@ const ColumnView: FC<IColumnView> = ({ columns, projectId }) => {
   }
 
   return (
-    <div className="flex w-fit items-center bg-red-200 justify-start gap-x-8 p-12">
-      {columns.map((col) => {
-        return (
-          <div
-            key={col.id}
-            className="h-[400px] w-[250px] rounded-md bg-violet-200 p-4"
-          >
-            <h3 className="text-md font-bold text-fuchsia-600">{col.name}</h3>
-          </div>
-        );
-      })}
-      {createNewColumn ? (
-        <div className="h-[400px] w-[250px] rounded-md bg-violet-200 p-4">
-          <input
-            placeholder="Column Name"
-            onChange={(e) => setNewColumnName(e.target.value)}
-            className="w-full border-b border-gray-300 bg-transparent px-2 py-1 text-gray-900 caret-fuchsia-700 placeholder:text-gray-500 focus:border-gray-500 focus:outline-none dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-400"
-          />
-          <div className="mt-2 flex w-full items-center justify-end gap-x-2">
-            <Icons.tick
-              onClick={handleCreateNewColumn}
-              className="hover:text-green-600"
+    <div className="flex">
+      <div className="flex w-screen items-center justify-start gap-x-8 overflow-auto p-12">
+        {columns.map((col) => {
+          return <SingleColumn key={col.id} column={col} />;
+        })}
+        {createNewColumn ? (
+          <div className="flex h-[400px] w-[250px] shrink-0 flex-col rounded-md bg-violet-200 p-4">
+            <input
+              placeholder="Column Name"
+              onChange={(e) => setNewColumnName(e.target.value)}
+              className="w-full border-b border-gray-300 bg-transparent px-2 py-1 text-gray-900 caret-fuchsia-700 placeholder:text-gray-500 focus:border-gray-500 focus:outline-none dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-400"
             />
-            <Icons.cross
-              onClick={() => setCreateNewColumn(false)}
-              className="hover:text-red-600"
-            />
+            <div className="mt-2 flex w-full items-center justify-end gap-x-2">
+              <Icons.tick
+                onClick={handleCreateNewColumn}
+                className="hover:text-green-600"
+              />
+              <Icons.cross
+                onClick={() => setCreateNewColumn(false)}
+                className="hover:text-red-600"
+              />
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      <Button onClick={() => setCreateNewColumn(true)}>
-        <Icons.plus className="h-5 w-5" />
-      </Button>
+        <Button onClick={() => setCreateNewColumn(true)}>
+          <Icons.plus className="h-5 w-5" />
+        </Button>
+      </div>
+      <div className="h-full  p-4" />
     </div>
   );
 };

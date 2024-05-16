@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   index,
   integer,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   text,
@@ -56,6 +57,8 @@ export const columnsRelations = relations(columns, ({ one, many }) => ({
 
 export type Column = typeof columns.$inferSelect;
 
+export const statusEnum = pgEnum("status", ["done", "pending"]);
+
 export const items = createTable("item", {
   id: varchar("id")
     .primaryKey()
@@ -64,6 +67,9 @@ export const items = createTable("item", {
   columnId: varchar("columnId", { length: 255 })
     .notNull()
     .references(() => columns.id),
+  status: statusEnum("status")
+    .notNull()
+    .$default(() => "pending"),
 });
 
 export const itemsRelations = relations(items, ({ one }) => ({

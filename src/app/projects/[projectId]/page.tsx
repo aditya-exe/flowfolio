@@ -13,9 +13,11 @@ const ProjectPage = async ({ params }: { params: { projectId: string } }) => {
     projectId: params.projectId,
   });
 
+  
+
   return (
     <>
-      <div className="flex min-h-screen flex-col overflow-x-scroll items-center justify-start bg-violet-950 text-fuchsia-500">
+      <div className="flex min-h-screen flex-col overflow-hidden items-center justify-start bg-violet-950 text-fuchsia-500">
         <Navbar user={session?.user} />
         <div className="w-full p-8">
           <ProjectBreadcrumb

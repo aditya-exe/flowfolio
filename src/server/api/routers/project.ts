@@ -79,6 +79,8 @@ export const projectRouter = createTRPCRouter({
         .from(columns)
         .where(eq(columns.projectId, projectId));
 
+        // Promise.allSettled();
+
       return {
         ...dbProject,
         columns: dbColumns,

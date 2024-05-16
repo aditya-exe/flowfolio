@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { columns } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 
 export const columnRouter = createTRPCRouter({
   create: protectedProcedure
@@ -32,5 +33,20 @@ export const columnRouter = createTRPCRouter({
       }
 
       return column;
+    }),
+  deleteById: protectedProcedure
+    .input(
+      z.object({
+        columnId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { columnId } = input;
+
+      const deletedColumn = await ctx.db
+        .delete(columns)
+        .where(eq(columns.id, columnId));
+
+      return deletedColumn.length === 1;
     }),
 });
