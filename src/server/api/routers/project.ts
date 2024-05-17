@@ -1,9 +1,9 @@
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { createFormSchema } from "@/lib/utils";
-import { columns, projects, users } from "@/server/db/schema";
+import { createFormSchema, type ColumnWithIssues } from "@/lib/utils";
+import { columns, issues, projects, users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const projectRouter = createTRPCRouter({
   create: protectedProcedure
@@ -79,11 +79,28 @@ export const projectRouter = createTRPCRouter({
         .from(columns)
         .where(eq(columns.projectId, projectId));
 
-        // Promise.allSettled();
+      const promises = dbColumns.map(async (column) => {
+        const dbIssues = await ctx.db
+          .select()
+          .from(issues)
+          .where(eq(issues.columnId, column.id));
+
+        return {
+          ...column,
+          issues: dbIssues,
+        };
+      });
+
+      const dbColumnsWithItems = (await Promise.allSettled(promises))
+        .filter(
+          (r): r is PromiseFulfilledResult<ColumnWithIssues> =>
+            r.status === "fulfilled",
+        )
+        .map((r) => r.value);
 
       return {
         ...dbProject,
-        columns: dbColumns,
+        columns: dbColumnsWithItems,
       };
     }),
   renameProject: protectedProcedure

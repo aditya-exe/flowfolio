@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
@@ -9,7 +9,19 @@ export function cn(...inputs: ClassValue[]) {
 export const createFormSchema = z.object({
   projectName: z.string().min(1),
   owner: z.string().min(3),
-  columns: z.array(z.object({  name: z.string() })).min(1),
+  columns: z.array(z.object({ name: z.string() })).min(1),
 });
 
 export type TCreateFormSchema = z.infer<typeof createFormSchema>;
+
+export type ColumnWithIssues = {
+  issues: {
+    id: string;
+    name: string;
+    columnId: string;
+    status: "done" | "pending";
+  }[];
+  id: string;
+  name: string;
+  projectId: string;
+};

@@ -52,14 +52,14 @@ export const columnsRelations = relations(columns, ({ one, many }) => ({
     fields: [columns.projectId],
     references: [projects.id],
   }),
-  items: many(items),
+  issues: many(issues),
 }));
 
 export type Column = typeof columns.$inferSelect;
 
 export const statusEnum = pgEnum("status", ["done", "pending"]);
 
-export const items = createTable("item", {
+export const issues = createTable("issue", {
   id: varchar("id")
     .primaryKey()
     .$defaultFn(() => nanoid(10)),
@@ -72,12 +72,14 @@ export const items = createTable("item", {
     .$default(() => "pending"),
 });
 
-export const itemsRelations = relations(items, ({ one }) => ({
+export const issuesRelations = relations(issues, ({ one }) => ({
   column: one(columns, {
-    fields: [items.columnId],
+    fields: [issues.columnId],
     references: [columns.id],
   }),
 }));
+
+export type Issue = typeof issues.$inferSelect;
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),

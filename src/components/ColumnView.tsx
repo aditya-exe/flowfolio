@@ -1,16 +1,16 @@
 "use client";
 
-import { type Column } from "@/server/db/schema";
-import { useState, type FC } from "react";
-import { Button } from "./ui/button";
-import { Icons } from "./Icons";
+import { type ColumnWithIssues } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { toast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useState, type FC } from "react";
+import { Icons } from "./Icons";
 import SingleColumn from "./SingleColumn";
+import { Button } from "./ui/button";
+import { toast } from "./ui/use-toast";
 
 interface IColumnView {
-  columns: Column[];
+  columns: ColumnWithIssues[];
   projectId: string;
 }
 

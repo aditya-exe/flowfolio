@@ -1,6 +1,8 @@
 "use client";
 
-import { type Column } from "@/server/db/schema";
+import { cn, type ColumnWithIssues } from "@/lib/utils";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 import { useState, type FC } from "react";
 import { Icons } from "./Icons";
 import {
@@ -10,14 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
-import { toast } from "./ui/use-toast";
-import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
+import { toast } from "./ui/use-toast";
+import IssueView from "@/components/IssueView";
 
 interface ISingleColumn {
-  column: Column;
+  column: ColumnWithIssues;
 }
 
 const SingleColumn: FC<ISingleColumn> = ({ column }) => {
@@ -45,7 +45,7 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
   });
 
   return (
-    <div className="group flex h-[400px] w-[250px] shrink-0  grow-0 flex-col items-start rounded-md bg-violet-200 p-4">
+    <div className="group flex h-[400px] w-[250px] shrink-0  grow-0 flex-col items-start rounded-md bg-violet-200 p-3">
       <div className="flex w-full items-center justify-between">
         <h3 className="text-md font-bold text-fuchsia-600">{column.name}</h3>
         <DropdownMenu>
@@ -63,6 +63,11 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+      <div className="mt-2 gap-y-2 flex flex-col w-full">
+        {column.issues.map((issue) => (
+          <IssueView key={issue.id} issue={issue} />
+        ))}
       </div>
       <div
         onClick={() => setCreateNewIssue(true)}
