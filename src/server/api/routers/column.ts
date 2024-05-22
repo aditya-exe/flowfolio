@@ -49,4 +49,33 @@ export const columnRouter = createTRPCRouter({
 
       return deletedColumn.length === 1;
     }),
+  renameColumn: protectedProcedure
+    .input(
+      z.object({
+        columnId: z.string(),
+        newColumnName: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { columnId, newColumnName } = input;
+
+      const updatedColumn = (
+        await ctx.db
+          .update(columns)
+          .set({
+            name: newColumnName,
+          })
+          .where(eq(columns.id, columnId))
+          .returning()
+      )[0];
+
+      if (!updatedColumn) {
+        throw new TRPCError({
+          message: "Cannot update column",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+
+      return true;
+    }),
 });

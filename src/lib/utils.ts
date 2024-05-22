@@ -20,6 +20,7 @@ export type ColumnWithIssues = {
     name: string;
     columnId: string;
     status: "done" | "pending";
+    assignedTo: string;
   }[];
   id: string;
   name: string;

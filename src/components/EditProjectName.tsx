@@ -13,7 +13,7 @@ interface IEditProjectName {
 }
 
 const EditProjectName: FC<IEditProjectName> = ({ projectName, projectId }) => {
-  const [editMode, setEditMode] = useState(false);
+  const  [editMode, setEditMode] = useState(false);
   const [newProjectName, setNewProjectName] = useState(projectName);
   const editRef = useRef(null);
   const router = useRouter();
@@ -22,13 +22,13 @@ const EditProjectName: FC<IEditProjectName> = ({ projectName, projectId }) => {
       setNewProjectName(projectName);
       toast({
         variant: "destructive",
-        title: "Couldn't update name",
+        title: "Couldn't update project name",
       });
       setEditMode(false);
     },
     onSuccess: () => {
       router.refresh();
-      toast({ title: "Successfully updated name" });
+      toast({ title: "Successfully updated project name" });
     },
     onSettled: () => {
       setEditMode(false);
@@ -61,7 +61,7 @@ const EditProjectName: FC<IEditProjectName> = ({ projectName, projectId }) => {
       ) : (
         <button
           onClick={() => setEditMode(true)}
-          className="bold rounded-md px-2 py-1 text-xl tracking-wide hover:bg-fuchsia-300 hover:text-fuchsia-900"
+          className="font-bold rounded-md px-2 py-1 text-xl tracking-wide hover:bg-fuchsia-300 hover:text-fuchsia-900"
         >
           {projectName}
         </button>

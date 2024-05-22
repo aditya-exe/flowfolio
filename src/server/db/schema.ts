@@ -70,12 +70,20 @@ export const issues = createTable("issue", {
   status: statusEnum("status")
     .notNull()
     .$default(() => "pending"),
+  assignedTo: varchar("assignedTo", { length: 255 })
+    .notNull()
+    .references(() => users.id)
+    // .$default(() => "unassigned"),
 });
 
 export const issuesRelations = relations(issues, ({ one }) => ({
   column: one(columns, {
     fields: [issues.columnId],
     references: [columns.id],
+  }),
+  assignedTo: one(users, {
+    fields: [issues.assignedTo],
+    references: [users.id],
   }),
 }));
 
@@ -93,6 +101,7 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  assignedIssues: many(issues),
 }));
 
 export const accounts = createTable(

@@ -15,6 +15,7 @@ import {
 import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
 import IssueView from "@/components/IssueView";
+import EditColumnName from "./EditColumnName";
 
 interface ISingleColumn {
   column: ColumnWithIssues;
@@ -33,7 +34,7 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
   });
   const [createNewIssue, setCreateNewIssue] = useState(false);
   const [issueName, setIssueName] = useState("");
-  const { mutate: createIssue } = api.item.create.useMutation({
+  const { mutate: createIssue } = api.issue.create.useMutation({
     onSuccess: () => {
       setCreateNewIssue(false);
       toast({ description: "Issue created successfully :)" });
@@ -47,7 +48,8 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
   return (
     <div className="group flex h-[400px] w-[250px] shrink-0  grow-0 flex-col items-start rounded-md bg-violet-200 p-3">
       <div className="flex w-full items-center justify-between">
-        <h3 className="text-md font-bold text-fuchsia-600">{column.name}</h3>
+        {/* <h3 className="text-md font-bold text-fuchsia-600">{column.name}</h3> */}
+        <EditColumnName columnId={column.id} columnName={column.name} />
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Icons.options />
@@ -64,7 +66,7 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="mt-2 gap-y-2 flex flex-col w-full">
+      <div className="mt-2 flex w-full flex-col gap-y-2">
         {column.issues.map((issue) => (
           <IssueView key={issue.id} issue={issue} />
         ))}

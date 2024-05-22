@@ -1,6 +1,7 @@
 import { columnRouter } from "./routers/column";
-import { itemRouter } from "./routers/item";
+import { issueRouter } from "./routers/issue";
 import { projectRouter } from "./routers/project";
+import { userRouter } from "./routers/user";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -11,7 +12,8 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 export const appRouter = createTRPCRouter({
   project: projectRouter,
   column: columnRouter,
-  item: itemRouter
+  issue: issueRouter,
+  user: userRouter,
 });
 
 // export type definition of API
