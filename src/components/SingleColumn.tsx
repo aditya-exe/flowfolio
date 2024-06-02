@@ -3,7 +3,7 @@
 import { cn, type ColumnWithIssues } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import { useState, type FC } from "react";
+import { useRef, useState, type FC } from "react";
 import { Icons } from "./Icons";
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
 import IssueView from "@/components/IssueView";
 import EditColumnName from "./EditColumnName";
+import { useOnClickOutside } from "usehooks-ts";
 
 interface ISingleColumn {
   column: ColumnWithIssues;
@@ -33,6 +34,7 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
     },
   });
   const [createNewIssue, setCreateNewIssue] = useState(false);
+  const textAreaRef = useRef(null);
   const [issueName, setIssueName] = useState("");
   const { mutate: createIssue } = api.issue.create.useMutation({
     onSuccess: () => {
@@ -45,8 +47,10 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
     },
   });
 
+  useOnClickOutside(textAreaRef, () => setCreateNewIssue(false));
+
   return (
-    <div className="group flex h-[400px] w-[250px] shrink-0  grow-0 flex-col items-start rounded-md bg-violet-200 p-3">
+    <div className="group flex h-fit min-h-[400px] w-[250px] shrink-0  grow-0 flex-col items-start rounded-md bg-violet-200 p-3">
       <div className="flex w-full items-center justify-between">
         {/* <h3 className="text-md font-bold text-fuchsia-600">{column.name}</h3> */}
         <EditColumnName columnId={column.id} columnName={column.name} />
@@ -83,6 +87,7 @@ const SingleColumn: FC<ISingleColumn> = ({ column }) => {
       </div>
       {createNewIssue ? (
         <Textarea
+          ref={textAreaRef}
           placeholder="What needs to be done?"
           rows={6}
           className="mt-2 w-full rounded-md bg-violet-50"

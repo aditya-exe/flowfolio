@@ -44,7 +44,7 @@ const ColumnView: FC<IColumnView> = ({ columns, projectId }) => {
 
   return (
     <div className="flex">
-      <div className="flex w-screen items-center justify-start gap-x-8 overflow-auto p-12">
+      <div className="flex w-fit items-center justify-start gap-x-8 overflow-auto p-12">
         {columns.map((col) => {
           return <SingleColumn key={col.id} column={col} />;
         })}
@@ -67,8 +67,9 @@ const ColumnView: FC<IColumnView> = ({ columns, projectId }) => {
             </div>
           </div>
         ) : null}
-
-        <Button onClick={() => setCreateNewColumn(true)}>
+      </div>
+      <div className="flex h-[400px] flex-col justify-center">
+        <Button className="mt-15" onClick={() => setCreateNewColumn(true)}>
           <Icons.plus className="h-5 w-5" />
         </Button>
       </div>

@@ -8,6 +8,7 @@ import {
   Star,
   UserPlus,
   X,
+  Loader2,
 } from "lucide-react";
 
 export const Icons = {
@@ -19,5 +20,6 @@ export const Icons = {
   arrowUpDown: ArrowUpDown,
   fav: Star,
   plus: Plus,
-  tick: Check
+  tick: Check,
+  loading: Loader2,
 };

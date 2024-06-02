@@ -26,3 +26,12 @@ export type ColumnWithIssues = {
   name: string;
   projectId: string;
 };
+
+export type IssueWithColumn = {
+  column: { id: string; name: string; projectId: string };
+  id: string;
+  name: string;
+  columnId: string;
+  status: "done" | "pending";
+  assignedTo: string;
+};
