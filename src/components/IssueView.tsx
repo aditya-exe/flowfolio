@@ -15,6 +15,7 @@ import { api } from "@/trpc/react";
 import { toast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import Link from "next/link";
 
 interface IItemView {
   issue: Issue;
@@ -55,7 +56,10 @@ const ItemView: FC<IItemView> = ({ issue }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="mt-2 flex w-full items-center justify-end">
+      <Link
+        href={`/user/${assignedUser?.id}`}
+        className="mt-2 flex w-full items-center justify-end"
+      >
         <Avatar>
           <AvatarImage
             src={assignedUser?.image ?? ""}
@@ -64,7 +68,7 @@ const ItemView: FC<IItemView> = ({ issue }) => {
           />
           <AvatarFallback>{assignedUser?.name?.charAt(0)}</AvatarFallback>
         </Avatar>
-      </div>
+      </Link>
     </div>
   );
 };

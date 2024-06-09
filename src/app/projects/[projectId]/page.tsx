@@ -1,13 +1,13 @@
-import { getServerAuthSession } from "@/server/auth";
-import Navbar from "@/components/Navbar";
-import { api } from "@/trpc/server";
-import ProjectBreadcrumb from "@/components/ProjectBreadcrumb";
-import EditProjectName from "@/components/EditProjectName";
-import ProjectOptions from "@/components/ProjectOptions";
 import ColumnView from "@/components/ColumnView";
+import EditProjectName from "@/components/EditProjectName";
+import Navbar from "@/components/Navbar";
+import ProjectBreadcrumb from "@/components/ProjectBreadcrumb";
+import ProjectOptions from "@/components/ProjectOptions";
+import { getUserSession } from "@/server/auth";
+import { api } from "@/trpc/server";
 
 const ProjectPage = async ({ params }: { params: { projectId: string } }) => {
-  const session = await getServerAuthSession();
+  const session = await getUserSession();
 
   const projectWithColumns = await api.project.getProjectWithColumns({
     projectId: params.projectId,

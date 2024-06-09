@@ -27,7 +27,7 @@ export const projects = createTable("project", {
   name: varchar("name").notNull(),
   owner: varchar("owner", { length: 255 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
@@ -44,7 +44,7 @@ export const columns = createTable("column", {
   name: varchar("name").notNull(),
   projectId: varchar("projectId", { length: 255 })
     .notNull()
-    .references(() => projects.id),
+    .references(() => projects.id, { onDelete: "cascade" }),
 });
 
 export const columnsRelations = relations(columns, ({ one, many }) => ({
@@ -66,14 +66,14 @@ export const issues = createTable("issue", {
   name: varchar("name").notNull(),
   columnId: varchar("columnId", { length: 255 })
     .notNull()
-    .references(() => columns.id),
+    .references(() => columns.id, { onDelete: "cascade" }),
   status: statusEnum("status")
     .notNull()
     .$default(() => "pending"),
   assignedTo: varchar("assignedTo", { length: 255 })
     .notNull()
-    .references(() => users.id)
-    // .$default(() => "unassigned"),
+    .references(() => users.id, { onDelete: "cascade" }),
+  // .$default(() => "unassigned"),
 });
 
 export const issuesRelations = relations(issues, ({ one }) => ({
@@ -97,6 +97,7 @@ export const users = createTable("user", {
     mode: "date",
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
+  headerImage: varchar("headerImage"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -109,7 +110,7 @@ export const accounts = createTable(
   {
     userId: varchar("userId", { length: 255 })
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     type: varchar("type", { length: 255 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
@@ -143,7 +144,7 @@ export const sessions = createTable(
       .primaryKey(),
     userId: varchar("userId", { length: 255 })
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, {onDelete: "cascade"}),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (session) => ({

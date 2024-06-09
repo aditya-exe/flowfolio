@@ -35,10 +35,10 @@ export const projectRouter = createTRPCRouter({
         projectId: project.projectId,
       }));
 
-      await ctx.db.insert(columns).values(columnsWithProjectId);
+      await ctx.db.insert(columns).values(columnsWithProjectId).returning();
 
       return {
-        message: "OK: project created",
+        projectId: project.projectId,
       };
     }),
   getAllByUserId: protectedProcedure.query(async ({ ctx }) => {
@@ -129,6 +129,23 @@ export const projectRouter = createTRPCRouter({
       }
 
       return true;
+    }),
+  deleteById: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        owner: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { projectId, owner } = input;
+      const userId = ctx.session.user.id;
+
+      if (userId !== owner) {
+        throw new TRPCError({ message: "Wrong user id", code: "UNAUTHORIZED" });
+      }
+
+      await ctx.db.delete(projects).where(eq(projects.id, projectId));
     }),
 });
 /* 

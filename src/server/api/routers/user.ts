@@ -38,6 +38,17 @@ export const userRouter = createTRPCRouter({
       .where(eq(issues.assignedTo, userId));
 
     const promises = dbIssues.map(async (issue) => {
+      const dbUser = await ctx.db.query.users.findFirst({
+        where: eq(users.id, issue.assignedTo),
+      });
+
+      if (!dbUser) {
+        throw new TRPCError({
+          message: "ERROR: No user found",
+          code: "BAD_REQUEST",
+        });
+      }
+
       const dbColumn = await ctx.db.query.columns.findFirst({
         where: eq(columns.id, issue.columnId),
       });
@@ -52,6 +63,11 @@ export const userRouter = createTRPCRouter({
       return {
         ...issue,
         column: dbColumn,
+        user: {
+          id: dbUser.id,
+          name: dbUser.name,
+          image: dbUser.image,
+        },
       };
     });
 
@@ -64,4 +80,22 @@ export const userRouter = createTRPCRouter({
 
     return dbIssuesWithColumn;
   }),
+  changeUserHeader: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        headerImage: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { userId: incomingUserId, headerImage } = input;
+      const userId = ctx.session.user.id;
+
+      if (userId !== incomingUserId) {
+        throw new TRPCError({
+          message: "User ids dont match",
+          code: "UNAUTHORIZED",
+        });
+      }
+    }),
 });

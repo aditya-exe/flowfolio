@@ -10,6 +10,8 @@ import {
 } from "./ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { api } from "@/trpc/react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import Link from "next/link";
 
 const YourWorkDropdown = () => {
   const { data: myIssues, isLoading } = api.user.getAssignedIssues.useQuery();
@@ -36,23 +38,38 @@ const YourWorkDropdown = () => {
             {isLoading ? (
               <Icons.loading />
             ) : (
-              <>
+              <div className="flex flex-col gap-y-2">
                 {myIssues !== undefined ? (
                   myIssues.map((myIssue) => {
                     return (
                       <div
                         key={myIssue.id}
-                        className="flex w-full flex-col items-start gap-y-1 rounded-md bg-red-200 px-2 py-1"
+                        className="border-1 flex w-full flex-col items-start justify-between gap-y-1 rounded-md border-purple-400 bg-neutral-800 px-2 py-1"
                       >
                         {myIssue.name}
-                        <div>{myIssue.column.name}</div>
+                        <Link
+                          href={`/${myIssue.user.id}`}
+                          className="flex w-full items-center justify-between"
+                        >
+                          <>{myIssue.column.name}</>
+                          <Avatar>
+                            <AvatarImage
+                              src={myIssue.user.name ?? ""}
+                              alt={myIssue.user.image ?? "User image"}
+                              className="size-10"
+                            />
+                            <AvatarFallback>
+                              {myIssue.user.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                        </Link>
                       </div>
                     );
                   })
                 ) : (
                   <div>Nothing assigned</div>
                 )}
-              </>
+              </div>
             )}
           </TabsContent>
           <TabsContent value="recent">Recent</TabsContent>

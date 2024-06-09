@@ -16,6 +16,9 @@ import { Icons } from "./Icons";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Checkbox } from "./ui/checkbox";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { toast } from "./ui/use-toast";
 
 type ProjectWithOwner = {
   id: string;
@@ -32,7 +35,9 @@ export const projectColumns: ColumnDef<ProjectWithOwner>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value: any) =>
+          table.toggleAllPageRowsSelected(!!value)
+        }
         aria-label="Select all"
       />
     ),
@@ -135,9 +140,37 @@ export const projectColumns: ColumnDef<ProjectWithOwner>[] = [
               <Link href={`/projects/${project.id}`}></Link>
               View Project details
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <DeleteProject owner={project.owner.id} projectId={project.id} />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
 ];
+
+const DeleteProject = ({
+  projectId,
+  owner,
+}: {
+  projectId: string;
+  owner: string;
+}) => {
+  const router = useRouter();
+  const { mutate } = api.project.deleteById.useMutation({
+    onSuccess: () => {
+      toast({ description: "Project deleted successfully" });
+      router.refresh();
+    },
+    onError: () => {
+      toast({
+        description: "Could not delete project",
+        variant: "destructive",
+      });
+    },
+  });
+
+  return <div onClick={() => mutate({ projectId, owner })}>Delete Project</div>;
+};

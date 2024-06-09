@@ -1,14 +1,14 @@
+import AllProjectList from "@/components/AllProjectList";
 import Navbar from "@/components/Navbar";
+import { projectColumns } from "@/components/project-columns";
 import { buttonVariants } from "@/components/ui/button";
-import { getServerAuthSession } from "@/server/auth";
+import { getUserSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AllProjectList from "@/components/AllProjectList";
-import { projectColumns } from "@/components/project-columns";
 
 const Dashboard = async () => {
-  const session = await getServerAuthSession();
+  const session = await getUserSession();
 
   if (!session) {
     redirect("/");

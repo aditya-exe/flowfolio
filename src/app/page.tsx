@@ -1,9 +1,9 @@
-import { getServerAuthSession } from "@/server/auth";
 import SignIn from "@/components/SignIn";
+import { getUserSession } from "@/server/auth";
 import { redirect } from "next/navigation";
 
 const Home = async () => {
-  const session = await getServerAuthSession();
+  const session = await getUserSession();
 
   if (session) {
     redirect("/projects");

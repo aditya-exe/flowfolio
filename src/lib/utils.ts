@@ -34,4 +34,9 @@ export type IssueWithColumn = {
   columnId: string;
   status: "done" | "pending";
   assignedTo: string;
+  user: {
+    id: string;
+    name: string;
+    image: string;
+  }
 };

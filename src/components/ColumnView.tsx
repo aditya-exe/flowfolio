@@ -44,7 +44,7 @@ const ColumnView: FC<IColumnView> = ({ columns, projectId }) => {
 
   return (
     <div className="flex">
-      <div className="flex w-fit items-center justify-start gap-x-8 overflow-auto p-12">
+      <div className="flex w-fit items-start justify-start gap-x-8 overflow-auto p-12">
         {columns.map((col) => {
           return <SingleColumn key={col.id} column={col} />;
         })}

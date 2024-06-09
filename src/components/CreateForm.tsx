@@ -12,12 +12,14 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { type TCreateFormSchema } from "@/lib/utils";
 import { toast } from "./ui/use-toast";
 import { api } from "@/trpc/react";
+import { redirect, useRouter } from "next/navigation";
 
 interface ICreateForm {
   user: User;
 }
 
 const CreateForm: FC<ICreateForm> = ({ user }) => {
+  const router = useRouter();
   const {
     register,
     control,
@@ -39,7 +41,12 @@ const CreateForm: FC<ICreateForm> = ({ user }) => {
     control,
     name: "columns",
   });
-  const { mutate } = api.project.create.useMutation();
+  const { mutate } = api.project.create.useMutation({
+    onSuccess: ({ projectId }) => {
+      // router.push("/")
+      router.push(`/projects/${projectId}`);
+    },
+  });
 
   const onSubmit = (data: Omit<TCreateFormSchema, "owner">) => {
     const dataWithOwner = {

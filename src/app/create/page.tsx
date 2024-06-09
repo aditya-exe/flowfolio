@@ -1,11 +1,11 @@
 import CreateForm from "@/components/CreateForm";
 import { Icons } from "@/components/Icons";
-import { getServerAuthSession } from "@/server/auth";
+import { getUserSession } from "@/server/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const CreatePage = async () => {
-  const session = await getServerAuthSession();
+  const session = await getUserSession();
 
   if (!session) {
     redirect("/");
