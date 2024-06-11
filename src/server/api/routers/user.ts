@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { eq } from "drizzle-orm";
 import { columns, issues, users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { type IssueWithColumn } from "@/lib/utils";
+
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 2MB
+const ACCEPTED_FILE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
 
 export const userRouter = createTRPCRouter({
   getUserByUserId: publicProcedure
@@ -84,7 +89,15 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string(),
-        headerImage: z.string(),
+        headerImage: z
+          .instanceof(File)
+          .refine((file) => {
+            return !file || file.size <= MAX_UPLOAD_SIZE;
+          }, "File size must be less than 2 MB")
+          .refine((file) => {
+            return ACCEPTED_FILE_TYPES.includes(file.type);
+          }, "File must be a PNG"),
+        // .any(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -97,5 +110,21 @@ export const userRouter = createTRPCRouter({
           code: "UNAUTHORIZED",
         });
       }
+
+      const { data, error } = await ctx.supabase.storage
+        .from("flowfolio_headers")
+        .upload(userId + "/header" + headerImage.type, headerImage, {
+          upsert: true,
+        });
+
+      if (error) {
+        console.log(error);
+        throw new TRPCError({
+          message: `ERROR: ${error.message}`,
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+
+      return data;
     }),
 });

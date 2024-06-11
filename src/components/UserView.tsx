@@ -9,10 +9,10 @@ interface IUserView {
   canEdit: boolean;
 }
 
-const UserView: FC<IUserView> = ({ user, canEdit }) => {
+const UserView: FC<IUserView> = ({ user }) => {
   return (
     <div className="bg=green=200 flex h-full w-full">
-      <UserHeader headerImage={user.headerImage} />
+      <UserHeader headerImage={user.headerImage} userId={user.id} />
     </div>
   );
 };
