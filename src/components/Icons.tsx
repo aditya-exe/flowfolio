@@ -9,6 +9,7 @@ import {
   UserPlus,
   X,
   Loader2,
+  ImagePlus,
 } from "lucide-react";
 
 export const Icons = {
@@ -22,4 +23,5 @@ export const Icons = {
   plus: Plus,
   tick: Check,
   loading: Loader2,
+  imagePlus: ImagePlus
 };

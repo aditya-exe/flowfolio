@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { eq } from "drizzle-orm";
+import { type IssueWithColumn } from "@/lib/types";
 import { columns, issues, users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
-import { type IssueWithColumn } from "@/lib/utils";
-
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 2MB
-const ACCEPTED_FILE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const userRouter = createTRPCRouter({
   getUserByUserId: publicProcedure
@@ -85,23 +82,15 @@ export const userRouter = createTRPCRouter({
 
     return dbIssuesWithColumn;
   }),
-  changeUserHeader: protectedProcedure
+  changeImage: protectedProcedure
     .input(
       z.object({
         userId: z.string(),
-        headerImage: z
-          .instanceof(File)
-          .refine((file) => {
-            return !file || file.size <= MAX_UPLOAD_SIZE;
-          }, "File size must be less than 2 MB")
-          .refine((file) => {
-            return ACCEPTED_FILE_TYPES.includes(file.type);
-          }, "File must be a PNG"),
-        // .any(),
+        newImage: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { userId: incomingUserId, headerImage } = input;
+      const { userId: incomingUserId, newImage } = input;
       const userId = ctx.session.user.id;
 
       if (userId !== incomingUserId) {
@@ -111,20 +100,25 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const { data, error } = await ctx.supabase.storage
-        .from("flowfolio_headers")
-        .upload(userId + "/header" + headerImage.type, headerImage, {
-          upsert: true,
-        });
+      const res = (
+        await ctx.db
+          .update(users)
+          .set({
+            image: newImage,
+          })
+          .where(eq(users.id, userId))
+          .returning()
+      )[0];
 
-      if (error) {
-        console.log(error);
+      if (!res) {
         throw new TRPCError({
-          message: `ERROR: ${error.message}`,
+          message: "Could not update user image",
           code: "INTERNAL_SERVER_ERROR",
         });
       }
 
-      return data;
+      return {
+        image: res.image,
+      };
     }),
 });

@@ -96,7 +96,7 @@ export const users = createTable("user", {
   emailVerified: timestamp("emailVerified", {
     mode: "date",
   }).default(sql`CURRENT_TIMESTAMP`),
-  image: varchar("image", { length: 255 }),
+  image: text("image"),
   headerImage: varchar("headerImage"),
 });
 

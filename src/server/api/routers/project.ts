@@ -1,4 +1,4 @@
-import { createFormSchema, type ColumnWithIssues } from "@/lib/utils";
+import { createFormSchema, type ColumnWithIssues } from "@/lib/types";
 import { columns, issues, projects, users } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";

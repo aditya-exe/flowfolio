@@ -1,18 +1,18 @@
 "use client";
 
-import { type FC } from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Icons } from "./Icons";
-import { type User } from "next-auth";
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
-import Link from "next/link";
-import { useFieldArray, useForm } from "react-hook-form";
-import { type TCreateFormSchema } from "@/lib/utils";
-import { toast } from "./ui/use-toast";
+import { type TCreateFormSchema } from "@/lib/types";
 import { api } from "@/trpc/react";
-import { redirect, useRouter } from "next/navigation";
+import { type User } from "next-auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { type FC } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { Icons } from "./Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { toast } from "./ui/use-toast";
 
 interface ICreateForm {
   user: User;

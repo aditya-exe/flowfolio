@@ -1,9 +1,13 @@
 "use client";
 
-import { cn, type ColumnWithIssues } from "@/lib/utils";
+import IssueView from "@/components/IssueView";
+import { type ColumnWithIssues } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FC } from "react";
+import { useOnClickOutside } from "usehooks-ts";
+import EditColumnName from "./EditColumnName";
 import { Icons } from "./Icons";
 import {
   DropdownMenu,
@@ -14,9 +18,6 @@ import {
 } from "./ui/dropdown-menu";
 import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
-import IssueView from "@/components/IssueView";
-import EditColumnName from "./EditColumnName";
-import { useOnClickOutside } from "usehooks-ts";
 
 interface ISingleColumn {
   column: ColumnWithIssues;

@@ -1,6 +1,6 @@
 "use client";
 
-import { type ColumnWithIssues } from "@/lib/utils";
+import { type ColumnWithIssues } from "@/lib/types";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState, type FC } from "react";
