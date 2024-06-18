@@ -1,11 +1,12 @@
 "use client";
 
-import { type FC, useRef, useState, type ChangeEvent, useEffect } from "react";
+import { type FC, useRef, type ChangeEvent } from "react";
 import { AvatarFallback, Avatar, AvatarImage } from "./ui/avatar";
 import { Input } from "./ui/input";
 import { Icons } from "./Icons";
 import { api } from "@/trpc/react";
 import { toast } from "./ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface IUserImage {
   userId: string;
@@ -15,7 +16,8 @@ interface IUserImage {
 
 const UserImage: FC<IUserImage> = ({ userId, userImage, userName }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { mutate, data } = api.user.changeImage.useMutation({
+  const router = useRouter();
+  const { mutate } = api.user.changeImage.useMutation({
     onError: (err) => {
       console.log(err);
       toast({
@@ -27,13 +29,14 @@ const UserImage: FC<IUserImage> = ({ userId, userImage, userName }) => {
       toast({
         description: "Updated image successfully",
       });
+      router.refresh();
     },
   });
-  const [userImageState, setUserImage] = useState(userImage);
+  // const [userImageState, setUserImage] = useState(userImage);
 
-  useEffect(() => {
-    setUserImage(data?.image);
-  }, [data?.image]);
+  // useEffect(() => {
+  //   setUserImage(data?.image);
+  // }, [data?.image]);
 
   function addImage(e: ChangeEvent<HTMLInputElement>) {
     const reader = new FileReader();
@@ -57,7 +60,7 @@ const UserImage: FC<IUserImage> = ({ userId, userImage, userName }) => {
     <div className="group relative ">
       <Avatar className="size-[100px] ring-2 ring-fuchsia-700">
         <AvatarImage
-          src={userImageState ?? ""}
+          src={userImage!}
           alt={userName ?? "User image"}
           className=""
         />

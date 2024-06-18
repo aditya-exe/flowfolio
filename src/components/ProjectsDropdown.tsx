@@ -27,7 +27,9 @@ const ProjectsDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="dark w-56 rounded-none">
         <DropdownMenuLabel className="mb-4">Projects</DropdownMenuLabel>
-        <DropdownMenuItem>View all projects</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/projects">View all projects</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link href="/create">Create new project</Link>

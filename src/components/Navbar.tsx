@@ -27,7 +27,11 @@ const Navbar: FC<INavbar> = ({ user }) => {
         <YourWorkDropdown />
       </div>
       {user ? (
-        <UserAvatar userName={user.name ?? ""} userImage={user.image ?? ""} />
+        <UserAvatar
+          userName={user.name ?? ""}
+          userId={user.id}
+          userImage={user.image ?? ""}
+        />
       ) : (
         <Button onClick={() => signIn("discord")}>Sign In</Button>
       )}

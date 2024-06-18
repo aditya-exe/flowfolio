@@ -15,19 +15,22 @@ export type ColumnWithIssues = {
     columnId: string;
     status: "done" | "pending";
     assignedTo: string;
+    createdAt: string;
   }[];
   id: string;
   name: string;
   projectId: string;
+  createdAt: string;
 };
 
 export type IssueWithColumn = {
-  column: { id: string; name: string; projectId: string };
+  column: { id: string; name: string; projectId: string; createdAt: string };
   id: string;
   name: string;
   columnId: string;
   status: "done" | "pending";
   assignedTo: string;
+  createdAt: string;
   user: {
     id: string;
     name: string;

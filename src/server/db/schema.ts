@@ -28,6 +28,7 @@ export const projects = createTable("project", {
   owner: varchar("owner", { length: 255 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "string" }).notNull().defaultNow(),
 });
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
@@ -45,6 +46,7 @@ export const columns = createTable("column", {
   projectId: varchar("projectId", { length: 255 })
     .notNull()
     .references(() => projects.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "string" }).notNull().defaultNow(),
 });
 
 export const columnsRelations = relations(columns, ({ one, many }) => ({
@@ -73,6 +75,7 @@ export const issues = createTable("issue", {
   assignedTo: varchar("assignedTo", { length: 255 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "string" }).notNull().defaultNow(),
   // .$default(() => "unassigned"),
 });
 
@@ -144,7 +147,7 @@ export const sessions = createTable(
       .primaryKey(),
     userId: varchar("userId", { length: 255 })
       .notNull()
-      .references(() => users.id, {onDelete: "cascade"}),
+      .references(() => users.id, { onDelete: "cascade" }),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (session) => ({

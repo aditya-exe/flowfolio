@@ -1,7 +1,7 @@
 "use client";
 
 import { FLOWFOLIO_HEADERS } from "@/lib/utils";
-import { type ChangeEvent, useRef, type FC } from "react";
+import { type ChangeEvent, useRef, type FC, useEffect } from "react";
 import {
   useFileUrl,
   useUpload,
@@ -19,9 +19,14 @@ interface IUserHeaderImage {
 
 const UserHeaderImage: FC<IUserHeaderImage> = ({ userId }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: headerUrl, isLoading, isError } = useFileUrl(
+  const {
+    data: headerUrl,
+    isLoading,
+    isError,
+    error,
+  } = useFileUrl(
     supabase.storage.from(FLOWFOLIO_HEADERS),
-    `${userId}/header`,
+    `/${userId}/header`,
     "public",
     {
       refetchOnWindowFocus: false,
@@ -44,6 +49,13 @@ const UserHeaderImage: FC<IUserHeaderImage> = ({ userId }) => {
     },
   );
 
+  useEffect(() => {
+    if (isError) {
+      // toast({ description: error.cause, variant: "destructive" });
+      console.log({ error });
+    }
+  }, [isError, error]);
+
   function uploadFile(e: ChangeEvent<HTMLInputElement>) {
     let file;
 
@@ -55,6 +67,8 @@ const UserHeaderImage: FC<IUserHeaderImage> = ({ userId }) => {
       upload({ files: [...file] });
     }
   }
+
+  console.log({ headerUrl });
 
   return (
     <div className="flex h-1/3 w-full flex-col">
